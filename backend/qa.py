@@ -1,7 +1,6 @@
-# qa.py - Basic Version with New Prompt Template
 import os
 from typing import List
-from langchain.vectorstores import FAISS
+from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.docstore.document import Document
 from langchain.chat_models import ChatOpenAI
@@ -9,12 +8,16 @@ from string import Template
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-def load_vectorstore(doc_id: str) -> FAISS:
-    return FAISS.load_local(f"vector_store/faiss_index_{doc_id}", OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY))
+def load_vectorstore(doc_id: str) -> Chroma:
+    persist_directory = f"vector_store/chroma_{doc_id}"
+    return Chroma(
+        persist_directory=persist_directory,
+        embedding_function=OpenAIEmbeddings(model="text-embedding-ada-002", openai_api_key=OPENAI_API_KEY),
+        collection_name=f"collection_{doc_id}"
+    )
 
-def retrieve_context(vectorstore: FAISS, question: str, k: int = 3) -> List[Document]:
-    docs = vectorstore.similarity_search(question, k=k)
-    return docs
+def retrieve_context(vectorstore: Chroma, question: str, k: int = 3) -> List[Document]:
+    return vectorstore.similarity_search(question, k=k)
 
 def format_prompt(context: List[Document], question: str) -> str:
     context_text = "\n".join([doc.page_content for doc in context])
@@ -40,7 +43,6 @@ Customer Question: "$question"
 Your Answer:
 """)
     return prompt_template.substitute(context=context_text, question=question)
-
 
 def ask_question(doc_id: str, question: str) -> str:
     vectorstore = load_vectorstore(doc_id)

@@ -10,4 +10,4 @@ def load_pdf_text(file_path):
     return text
 
 def get_embedding_function():
-    return OpenAIEmbeddings()
+    return OpenAIEmbeddings(model="text-embedding-ada-002")
