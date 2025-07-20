@@ -6,3 +6,7 @@ faiss-cpu
 pypdf2
 python-multipart
 chromadb
+streamlit
+requests
+langchain-community
+tiktoken

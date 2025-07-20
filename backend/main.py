@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from ingestion import ingest_pdf
-from qa import answer_question
+from qa import ask_question
 
 app = FastAPI()
 app.add_middleware(
@@ -13,9 +13,9 @@ app.add_middleware(
 )
 
 @app.post("/upload_pdf/")
-async def upload_pdf(file: UploadFile = File(...), doc_id: str = Form(...)):
-    return await ingest_pdf(file, doc_id)
+async def upload_pdf(file: UploadFile = File(...)):
+    return await ingest_pdf(file)
 
 @app.post("/ask/")
-async def ask(question: str = Form(...), doc_id: str = Form(...)):
-    return await answer_question(question, doc_id)
+async def ask(question: str = Form(...)):
+    return ask_question(question)

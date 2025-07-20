@@ -8,12 +8,12 @@ from string import Template
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-def load_vectorstore(doc_id: str) -> Chroma:
-    persist_directory = f"vector_store/chroma_{doc_id}"
+def load_vectorstore() -> Chroma:
+    persist_directory = f"vector_store"
     return Chroma(
         persist_directory=persist_directory,
         embedding_function=OpenAIEmbeddings(model="text-embedding-ada-002", openai_api_key=OPENAI_API_KEY),
-        collection_name=f"collection_{doc_id}"
+        collection_name="default"
     )
 
 def retrieve_context(vectorstore: Chroma, question: str, k: int = 3) -> List[Document]:
@@ -44,8 +44,8 @@ Your Answer:
 """)
     return prompt_template.substitute(context=context_text, question=question)
 
-def ask_question(doc_id: str, question: str) -> str:
-    vectorstore = load_vectorstore(doc_id)
+def ask_question(question: str) -> str:
+    vectorstore = load_vectorstore()
     docs = retrieve_context(vectorstore, question)
     prompt = format_prompt(docs, question)
 
