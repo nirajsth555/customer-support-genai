@@ -10,3 +10,4 @@ streamlit
 requests
 langchain-community
 tiktoken
+rank_bm25
