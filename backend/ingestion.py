@@ -17,7 +17,7 @@ async def ingest_pdf(file: UploadFile):
     # splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
-        chunk_overlap=500,
+        chunk_overlap=500, #ensures chunk continuity
         length_function=len,
         separators=["\n\n", "\n", ".", " ", ""]
     )

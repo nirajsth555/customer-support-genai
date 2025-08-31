@@ -24,6 +24,12 @@ def format_prompt(context: List[Document], question: str) -> str:
     prompt_template = Template("""
 You are a professional AI assistant trained to help customers by answering their questions based strictly on the provided context.
 
+To answer:
+1. Carefully read the context.
+2. Identify the most relevant parts that relate to the customer question.
+3. Reason step-by-step using only the context (don’t use outside knowledge).
+4. Provide a final, clear, and concise answer.
+
 Your response should:
 - Be clear, concise, and helpful.
 - Rely only on the context provided below.
@@ -39,8 +45,11 @@ $context
 ---
 
 Customer Question: "$question"
+                            
+Step-by-Step Reasoning (internal only, not shown to customer):
+(Think through the answer here before giving the final response)
 
-Your Answer:
+Final Answer (customer-facing):
 """)
     return prompt_template.substitute(context=context_text, question=question)
 
